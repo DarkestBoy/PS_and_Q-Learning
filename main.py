@@ -1,16 +1,63 @@
-# 这是一个示例 Python 脚本。
+import gymnasium as gym
+import numpy as np
+from q_learning import q_learning
+from profit_sharing import profit_sharing
+from util import plot_rewards_only, plot_final_success_bar, plot_policy_arrows
 
-# 按 Shift+F10 执行或将其替换为您的代码。
-# 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
+def main():
+    # ----- Experiment Parameters -----
+    num_episodes = 10000
+    alpha = 0.1
+    epsilon = 0.5
+    max_steps = 100
+    beta = 0.9
+    window = 100
+    env_name = 'FrozenLake-v1'
+    is_slippery = False   # Deterministic environment for fair comparison
+
+    # ----- Environment -----
+    env = gym.make(env_name, map_name="4x4", is_slippery=is_slippery)
+
+    # ----- Q-learning -----
+    Q, q_rewards = q_learning(
+        env,
+        num_episodes=num_episodes,
+        alpha=alpha,
+        gamma=0.99,
+        epsilon=epsilon,
+        max_steps=max_steps
+    )
+    print("Q-learning: Average reward in last 10 episodes:", np.mean(q_rewards[-10:]))
+
+    # ----- Profit Sharing -----
+    PS, ps_rewards = profit_sharing(
+        env,
+        num_episodes=num_episodes,
+        alpha=alpha,
+        epsilon=epsilon,
+        max_steps=max_steps,
+        beta=beta
+    )
+    print("Profit Sharing: Average reward in last 10 episodes:", np.mean(ps_rewards[-10:]))
+
+    # ----- Visualization -----
+    plot_rewards_only(
+        [q_rewards, ps_rewards],
+        labels=["Q-learning", "Profit Sharing"],
+        window=100,
+        downsample_step=20
+    )
+
+    plot_final_success_bar(
+        [q_rewards, ps_rewards],
+        labels=["Q-learning", "Profit Sharing"],
+        last_n=1000,
+        title="Final Success Rate"
+    )
+
+    plot_policy_arrows(Q, title="Q-learning Policy (Optimal Actions)")
+    plot_policy_arrows(PS, title="Profit Sharing Policy (Optimal Actions)")
 
 
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 Ctrl+F8 切换断点。
-
-
-# 按装订区域中的绿色按钮以运行脚本。
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
+if __name__ == "__main__":
+    main()
