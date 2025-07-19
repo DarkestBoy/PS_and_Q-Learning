@@ -1,0 +1,19 @@
+# Environment Installation Guide
+
+1. Make sure Python 3.8 or higher is installed on your system.
+
+2. (Optional) Create and activate a virtual environment:
+   python -m venv .venv
+   # On Windows:
+   .venv\Scripts\activate
+   # On Mac/Linux:
+   source .venv/bin/activate
+
+3. Install all dependencies:
+   pip install -r requirements.txt
+
+# Or install packages individually:
+#     pip install gymnasium numpy matplotlib
+
+4. After installation, run the experiment with:
+   python main.py
