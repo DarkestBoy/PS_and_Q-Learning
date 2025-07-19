@@ -13,7 +13,7 @@ def q_learning(
 
     n_states = env.observation_space.n
     n_actions = env.action_space.n
-    Q = np.zeros((n_states, n_actions))    # 初始化Q表
+    Q = np.zeros((n_states, n_actions))
 
     reward_list = []
 
